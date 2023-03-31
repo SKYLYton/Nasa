@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Nasa</string>
+    <string name="title_home">Главная</string>
+    <string name="title_menu">Меню</string>
+
+    <string name="placeholder">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
+
+    <!-- MenuFragment -->
+    <string name="menu_fragment_title">Меню</string>
+    <string name="menu_fragment_settings">Настройки</string>
+    <string name="menu_fragment_about_app">О приложении</string>
+    <string name="menu_fragment_deleted_notes">Удаленные заметки</string>
+    <string name="menu_fragment_log_out">Выйти</string>
+
+    <!-- SettingsFragment -->
+    <string name="settings_fragment_title">Настройки</string>
+    <string name="settings_fragment_theme_mode">Тема</string>
+
+    <!-- AboutAppFragment -->
+    <string name="about_app_fragment_title">О приложении</string>
+    <string name="about_app_fragment_developer">Разработчик: Федотов Яков</string>
+    <string name="about_app_fragment_version">Версия: %1s</string>
+
+</resources>
