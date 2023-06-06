@@ -1,4 +1,4 @@
-package com.notes.ui.base
+package com.nasa.ui.base
 
 /**
  * Базовая реализация Интерактора

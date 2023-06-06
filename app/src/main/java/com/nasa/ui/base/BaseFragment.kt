@@ -27,60 +27,24 @@ import kotlinx.coroutines.launch
 private typealias Inflate<T> = (LayoutInflater, ViewGroup?, Boolean) -> T
 
 abstract class BaseFragment<Binding : ViewBinding>(private val inflate: Inflate<Binding>) :
-    Fragment(), DialogActionListener {
+    Fragment() {
 
     private var binding: Binding? = null
-
-    /**
-     * Поле, хранящее значение первый раз ли вызывается onResume
-     */
-    private var isFirstResume: Boolean = true
-
-    /**
-     * Главный контейнер, к элементам которого будет применяться анимация
-     */
-    protected var container: ViewGroup? = null
-
-    /**
-     * Виден ли нижний навигационный бар
-     */
-    protected open val isBottomNavVisible: Boolean = true
-
-    /**
-     * Слушатель, который вызывают при нажатии кнопки "назад"
-     */
-    val onBackNavigationListener: ((View) -> Unit) = {
-        requireActivity().onBackPressed()
-    }
-
-    private val transition = AutoTransition().apply {
-        duration = 200
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        mainActivity?.bottomNavVisible(isBottomNavVisible)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = inflate.invoke(inflater, container, false)
-        return binding!!.root
+        val binding = inflate.invoke(inflater, container, false)
+        this.binding = binding
+        return binding.root
     }
 
     protected fun navigateSafety(destination: NavDirections) =
         findNavController().currentDestination?.getAction(destination.actionId)?.let {
             findNavController().navigate(destination)
         }
-
-    protected fun navigateToCall(number: String) {
-        startActivity(Intent(Intent.ACTION_DIAL).apply {
-            data = Uri.parse("tel:$number")
-        })
-    }
 
     protected fun <T> subscribe(flow: Flow<T>, action: suspend (T) -> Unit) {
         viewLifecycleOwner.lifecycleScope.launch {
@@ -96,17 +60,6 @@ abstract class BaseFragment<Binding : ViewBinding>(private val inflate: Inflate<
         binding?.let(block)
     }
 
-    protected fun runBindingWithAnim(block: Binding.() -> Unit) {
-        runWithAnim()
-        binding?.let(block)
-    }
-
-    protected fun runWithAnim() {
-        container?.let {
-            TransitionManager.beginDelayedTransition(it, transition)
-        }
-    }
-
     protected fun addHandleBackCallBack(callback: OnBackPressedCallback) {
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
     }
@@ -115,47 +68,14 @@ abstract class BaseFragment<Binding : ViewBinding>(private val inflate: Inflate<
         requireActivity().onBackPressedDispatcher.addCallback(requireActivity(), callback)
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (!isFirstResume) {
-            onRestart()
-        }
-        isFirstResume = false
-    }
-
-    /**
-     * Метод вызывается при перезапуске фрагмента
-     */
-    open fun onRestart() {
-        /* no-op */
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
     }
 
-    final override fun onActionPerformed(code: String, result: Bundle) {
-        when (code) {
-            ACTION -> onDialogActionPerformed(result)
-            DISMISS -> onDialogDismissed()
-        }
-    }
-
-    protected open fun onDialogActionPerformed(bundle: Bundle) {
-        /* no-op */
-    }
-
-    protected open fun onDialogDismissed() {
-        /* no-op */
-    }
-
     protected fun onBackPressed() {
         mainActivity?.onBackPressedDispatcher?.onBackPressed()
     }
-
-    protected val mainNavController: NavController?
-        get() = (activity as MainActivity).navController
 
     protected val mainActivity: MainActivity?
         get() = activity as? MainActivity
